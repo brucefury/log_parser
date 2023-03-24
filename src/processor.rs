@@ -117,26 +117,23 @@ pub async fn process_lines(
         } else if !in_trace && config.count_mode {
             let msg = date_re.replace_all(&line, "").to_string();
 
-            if let Some(sim_arg) = config.similarity_threshold {
-                let mut best_match = None;
-                let mut best_score = 0.0;
-
-                for (key, _) in &messages {
-                    let score = normalized_levenshtein(key, &msg);
-                    if score > sim_arg && score > best_score {
-                        best_match = Some(key.clone());
-                        best_score = score;
-                    }
+            let sim_arg = config.similarity_threshold;
+            let mut best_match = None;
+            let mut best_score = 0.0;
+    
+            for (key, _) in &messages {
+                let score = normalized_levenshtein(key, &msg);
+                if score > sim_arg && score > best_score {
+                    best_match = Some(key.clone());
+                    best_score = score;
                 }
-
-                if let Some(key) = best_match {
-                    *messages.get_mut(&key).unwrap() += 1;
-                    similarity_scores.insert(key, best_score);
-                } else {
-                    messages.insert(msg.clone(), 1);
-                }
+            }
+    
+            if let Some(key) = best_match {
+                *messages.get_mut(&key).unwrap() += 1;
+                similarity_scores.insert(key, best_score);
             } else {
-                *messages.entry(msg).or_insert(0) += 1;
+                messages.insert(msg.clone(), 1);
             }
         }
 

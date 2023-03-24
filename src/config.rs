@@ -69,7 +69,7 @@ impl Config {
             end_date,
             directory_mode,
             current_directory_mode,
-            similarity_threshold: Some(similarity_threshold),
+            similarity_threshold,
             search,
             use_filter_file,
             file_path,
