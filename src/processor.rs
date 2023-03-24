@@ -146,9 +146,11 @@ pub async fn process_lines(
     }
 
     if config.count_mode {
-        for (key, count) in messages {
-            let sim_score = similarity_scores.get(&key).unwrap_or(&1.0);
-            println!("{} (Count: {}, Minimum Similarity: {:.2})", key, count, sim_score);
+        let mut message_vec: Vec<(&String, &usize)> = messages.iter().collect();
+        message_vec.sort_by(|a, b| b.1.cmp(a.1));
+        for (key, count) in message_vec {
+            let sim_score = similarity_scores.get(key).unwrap_or(&1.0);
+            println!("{} (Count: {}, Minimum Similarity: {:.3})", key, count, sim_score);
         }
     }
 

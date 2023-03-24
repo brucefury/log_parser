@@ -8,7 +8,7 @@ pub struct Config {
     pub end_date: Option<i64>,
     pub directory_mode: Option<PathBuf>,
     pub current_directory_mode: bool,
-    pub similarity_threshold: Option<f64>,
+    pub similarity_threshold: f64,
     pub search: Option<String>,
     pub use_filter_file: bool,
     pub file_path: Option<PathBuf>,
@@ -44,7 +44,8 @@ impl Config {
 
         let similarity_threshold = matches
             .value_of("similarity")
-            .and_then(|s| s.parse::<f64>().ok());
+            .and_then(|s| s.parse::<f64>().ok())
+            .unwrap_or(0.8);
 
         let search = matches
             .value_of("search")
@@ -68,7 +69,7 @@ impl Config {
             end_date,
             directory_mode,
             current_directory_mode,
-            similarity_threshold,
+            similarity_threshold: Some(similarity_threshold),
             search,
             use_filter_file,
             file_path,
